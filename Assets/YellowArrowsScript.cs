@@ -102,7 +102,7 @@ public class YellowArrowsScript : MonoBehaviour
         ParametrizedRule("Exactly 3 batteries on bomb", (dirs, module) => module.Bomb.GetBatteryCount() == 3),
         ParametrizedRule("At most 3 batteries on bomb", (dirs, module) => module.Bomb.GetBatteryCount() <= 3),
         ParametrizedRule("At least 4 batteries on bomb", (dirs, module) => module.Bomb.GetBatteryCount() >= 4),
-        ParametrizedRule("Number of batteries is even", (dirs, module) => module.Bomb.GetBatteryHolderCount() % 2 == 0),
+        ParametrizedRule("Number of battery holders is even", (dirs, module) => module.Bomb.GetBatteryHolderCount() % 2 == 0),
         ParametrizedRule("No battery holders on bomb", (dirs, module) => module.Bomb.GetBatteryHolderCount() == 0),
         ParametrizedRule("Exactly 1 battery holder on bomb", (dirs, module) => module.Bomb.GetBatteryHolderCount() == 1),
         ParametrizedRule("Exactly 2 battery holders on bomb", (dirs, module) => module.Bomb.GetBatteryHolderCount() == 2),
@@ -226,7 +226,8 @@ public class YellowArrowsScript : MonoBehaviour
 
     private Func<List<ArrowDirection>, ArrowDirection>[] GenerateRuleSeed(MonoRandom rnd)
     {
-        var rulesRaw = rnd.ShuffleFisherYates(_ruleSeededRules).Select(r => r(this, rnd)).ToArray();
+        var shuffled = rnd.ShuffleFisherYates(Enumerable.Range(0, _ruleSeededRules.Length).ToArray());
+        var rulesRaw = shuffled.Select(i => _ruleSeededRules[i](this, rnd)).ToArray();
         var rulesStrings = rulesRaw.Take(26).Select((r, ix) => $"<Yellow Arrows #{moduleId}> {(char) ('A' + ix)} = {r.Name}").ToArray();
         Debug.Log($"<Yellow Arrows #{moduleId}> Rules:\n{rulesStrings.Join("\n")}");
         return rulesRaw.Select(r => r.Rule).ToArray();
