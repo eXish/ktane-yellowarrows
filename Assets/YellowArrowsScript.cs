@@ -357,6 +357,8 @@ public class YellowArrowsScript : MonoBehaviour
         }
         yield return null;
         yield return btns;
+        if (_solutionDirs == null)
+            yield return "solve";
     }
 
     IEnumerator TwitchHandleForcedSolve()
